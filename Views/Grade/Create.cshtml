@@ -1,0 +1,108 @@
+@model StudentGradeManagementSystem.Models.Grade
+
+@{ ViewData["Title"] = "添加成绩"; }
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-10 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0"><i class="fas fa-graduation-cap"></i> 添加成绩</h3>
+                </div>
+                <div class="card-body">
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            @TempData["ErrorMessage"]
+                        </div>
+                    }
+                    
+                    <!-- 学生ID输入区域 -->
+                    <div class="mb-4">
+                        <form method="get" asp-action="Create">
+                            <div class="row align-items-end">
+                                <div class="col-md-6">
+                                    <label class="form-label"><i class="fas fa-user-graduate"></i> 学生ID</label>
+                                    <input type="number" name="studentId" class="form-control" value="@ViewBag.StudentId" placeholder="请输入学生ID" required />
+                                </div>
+                                <div class="col-md-3">
+                                    <button type="submit" class="btn btn-info">
+                                        <i class="fas fa-search"></i> 查询课程
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    @if (ViewBag.StudentId != null)
+                    {
+                        @if (!string.IsNullOrEmpty(ViewBag.StudentName))
+                        {
+                            <div class="alert alert-info">
+                                <strong>学生信息：</strong> ID: @ViewBag.StudentId, 姓名: @ViewBag.StudentName
+                            </div>
+                            
+                            @if (((List<dynamic>)ViewBag.AvailableCourses).Count > 0)
+                            {
+                                <h5 class="mb-3">可录入成绩的课程：</h5>
+                                
+                                @foreach (var course in (List<dynamic>)ViewBag.AvailableCourses)
+                                {
+                                    <div class="card mb-3 border-secondary">
+                                        <div class="card-body">
+                                            <form method="post" asp-action="Create">
+                                                <input type="hidden" name="studentId" value="@ViewBag.StudentId" />
+                                                <input type="hidden" name="courseId" value="@course.CourseID" />
+                                                <input type="hidden" name="teacherId" value="@course.TeacherID" />
+                                                
+                                                <div class="row align-items-center">
+                                                    <div class="col-md-3">
+                                                        <strong>课程：</strong>@course.CourseName
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <strong>任课老师：</strong>@course.TeacherName
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <label class="form-label">成绩：</label>
+                                                        <input type="number" name="gradeValue" class="form-control" min="0" max="100" step="0.1" placeholder="0-100" required />
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <button type="submit" class="btn btn-success">
+                                                            <i class="fas fa-save"></i> 保存成绩
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-info-circle"></i> 该学生没有可录入成绩的课程（可能是没有选修课程或所有课程都已录入成绩）
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="alert alert-danger">
+                                <i class="fas fa-exclamation-triangle"></i> 未找到ID为 @ViewBag.StudentId 的学生
+                            </div>
+                        }
+                    }
+                    
+                    <div class="mt-4">
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> 返回成绩列表
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

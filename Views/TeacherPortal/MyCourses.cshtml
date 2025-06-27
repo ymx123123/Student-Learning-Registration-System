@@ -1,0 +1,163 @@
+@model List<Course>
+@{
+    ViewData["Title"] = "我的课程";
+    Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2><i class="fas fa-chalkboard-teacher"></i> 我的课程</h2>
+                <a href="@Url.Action("Index", "TeacherPortal")" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> 返回主页
+                </a>
+            </div>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Count > 0)
+    {
+        <div class="row">
+            @foreach (var course in Model)
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-book"></i> @course.CourseName
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>课程编号：</strong>@course.CourseID</p>
+                                    <p><strong>学分：</strong>@course.Credit</p>
+                                    <p><strong>选课人数：</strong><span class="badge bg-primary">@course.StudentCourses.Count</span></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <button class="btn btn-outline-info btn-sm" onclick="toggleStudents('@course.CourseID')">
+                                        <i class="fas fa-users"></i> 查看学生
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- 学生列表 -->
+                            <div id="students_@course.CourseID" class="mt-3" style="display: none;">
+                                <hr>
+                                <h6><i class="fas fa-users"></i> 选课学生列表：</h6>
+                                @if (course.StudentCourses.Count > 0)
+                                {
+                                    <div class="table-responsive">
+                                        <table class="table table-sm table-striped">
+                                            <thead>
+                                                <tr>
+                                                    <th>学号</th>
+                                                    <th>姓名</th>
+                                                    <th>性别</th>
+                                                    <th>班级</th>
+                                                    <th>操作</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var sc in course.StudentCourses)
+                                                {
+                                                    <tr>
+                                                        <td>@sc.Student.StudentID</td>
+                                                        <td>@sc.Student.StudentName</td>
+                                                        <td>@sc.Student.Gender</td>
+                                                        <td>@sc.Student.Class?.ClassName</td>
+                                                        <td>
+                                                            <a href="@Url.Action("GradeManagement", "TeacherPortal", new { courseId = course.CourseID, studentId = sc.Student.StudentID })" 
+                                                               class="btn btn-warning btn-xs">
+                                                                <i class="fas fa-edit"></i> 录入成绩
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle"></i> 暂无学生选择此课程
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-warning">
+                    <h4><i class="fas fa-exclamation-triangle"></i> 暂无课程</h4>
+                    <p>您目前没有教授任何课程。请联系管理员为您分配课程。</p>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- 统计信息 -->
+    @if (Model != null && Model.Count > 0)
+    {
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-pie"></i> 课程统计
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <h3 class="text-primary">@Model.Count</h3>
+                                    <p>教授课程数</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <h3 class="text-success">@Model.Sum(c => c.StudentCourses.Count)</h3>
+                                    <p>总选课人数</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <h3 class="text-info">@Model.Sum(c => c.Credit)</h3>
+                                    <p>总学分</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="text-center">
+                                    <h3 class="text-warning">@(Model.Count > 0 ? Math.Round((double)Model.Sum(c => c.StudentCourses.Count) / Model.Count, 1) : 0)</h3>
+                                    <p>平均选课人数</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function toggleStudents(courseId) {
+            var studentDiv = document.getElementById('students_' + courseId);
+            if (studentDiv.style.display === 'none') {
+                studentDiv.style.display = 'block';
+            } else {
+                studentDiv.style.display = 'none';
+            }
+        }
+    </script>
+}

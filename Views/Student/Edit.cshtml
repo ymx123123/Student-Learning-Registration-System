@@ -1,0 +1,42 @@
+@model StudentGradeManagementSystem.Models.Student
+
+@{ ViewData["Title"] = "编辑学生"; }
+
+<h2 class="mb-4">编辑学生</h2>
+
+<form asp-action="Edit" class="border p-4 rounded bg-light shadow-sm">
+    <input type="hidden" asp-for="StudentID" />
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+    <div class="mb-3">
+        <label asp-for="StudentName" class="form-label">姓名</label>
+        <input asp-for="StudentName" class="form-control" />
+        <span asp-validation-for="StudentName" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Gender" class="form-label">性别</label>
+        <input asp-for="Gender" class="form-control" />
+        <span asp-validation-for="Gender" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="BirthDate" class="form-label">出生日期</label>
+        <input asp-for="BirthDate" class="form-control" type="date" />
+        <span asp-validation-for="BirthDate" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="ClassID" class="form-label">班级</label>
+        <select asp-for="ClassID" class="form-select">
+            <option value="">请选择班级</option>
+            @foreach (var classItem in ViewBag.Classes as List<StudentGradeManagementSystem.Models.Class>)
+            {
+                <option value="@classItem.ClassID">@classItem.ClassName</option>
+            }
+        </select>
+        <span asp-validation-for="ClassID" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">保存</button>
+    <a asp-action="Index" class="btn btn-secondary ms-2">返回列表</a>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

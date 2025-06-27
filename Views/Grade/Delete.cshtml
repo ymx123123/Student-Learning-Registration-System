@@ -1,0 +1,75 @@
+@model StudentGradeManagementSystem.Models.Grade
+
+@{ ViewData["Title"] = "删除成绩"; }
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="mb-0"><i class="fas fa-trash-alt"></i> 删除成绩</h3>
+                </div>
+                <div class="card-body">
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            <i class="fas fa-exclamation-triangle"></i> @TempData["ErrorMessage"]
+                        </div>
+                    }
+                    
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i> <strong>警告：</strong>确认要删除此成绩吗？此操作不可撤销！
+                    </div>
+                    
+                    <!-- 成绩信息展示 -->
+                    <div class="mb-4">
+                        <h5 class="text-muted mb-3"><i class="fas fa-graduation-cap"></i> 成绩信息</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label text-muted">学生</label>
+                                    <div class="form-control-plaintext bg-light p-2 rounded">
+                                        @(Model.Student != null ? $"{Model.Student.StudentID} - {Model.Student.StudentName}" : Model.StudentID.ToString())
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label text-muted">课程</label>
+                                    <div class="form-control-plaintext bg-light p-2 rounded">
+                                        @(Model.Course != null ? $"{Model.Course.CourseID} - {Model.Course.CourseName}" : Model.CourseID.ToString())
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label text-muted">成绩</label>
+                                    <div class="form-control-plaintext bg-light p-2 rounded">
+                                        @Html.DisplayFor(model => model.GradeValue)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr />
+                    
+                    <!-- 删除选项 -->
+                    <form asp-action="Delete" method="post">
+                        <input type="hidden" asp-for="GradeID" />
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-arrow-left"></i> 取消
+                            </a>
+                            <button type="submit" class="btn btn-danger btn-lg" onclick="return confirm('确认删除此成绩吗？此操作不可撤销！')">
+                                <i class="fas fa-trash-alt"></i> 确认删除
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

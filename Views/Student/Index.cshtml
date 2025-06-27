@@ -1,0 +1,133 @@
+@using Microsoft.AspNetCore.Http
+@model IEnumerable<StudentGradeManagementSystem.Models.Student>
+
+@{ ViewData["Title"] = "学生信息管理"; }
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary"><i class="fas fa-user-graduate"></i> 学生信息管理</h2>
+        <div>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary me-2">
+                <i class="fas fa-home"></i> 返回主页
+            </a>
+            <a asp-action="Create" class="btn btn-success">
+                <i class="fas fa-plus"></i> 添加学生
+            </a>
+        </div>
+    </div>
+
+    <!-- 搜索表单 -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form asp-action="Index" method="get" class="row g-3">
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input type="text" name="searchString" class="form-control" 
+                               placeholder="请输入学生姓名..." 
+                               value="@ViewContext.HttpContext.Request.Query["searchString"]" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                        <input type="number" name="studentId" class="form-control" 
+                               placeholder="请输入学生ID..." 
+                               value="@ViewContext.HttpContext.Request.Query["studentId"]" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-users"></i></span>
+                        <select name="classId" class="form-select">
+                            <option value="">选择班级（全部）</option>
+                            @foreach (var classItem in ViewBag.Classes as List<StudentGradeManagementSystem.Models.Class>)
+                            {
+                                <option value="@classItem.ClassID" selected="@(ViewBag.SelectedClassId != null && ViewBag.SelectedClassId.Equals(classItem.ClassID))">
+                                    @classItem.ClassName
+                                </option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search"></i> 搜索
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- 学生列表 -->
+    <div class="card">
+        <div class="card-header bg-light">
+            <h5 class="mb-0"><i class="fas fa-list"></i> 学生列表</h5>
+        </div>
+        <div class="card-body p-0">
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th><i class="fas fa-hashtag"></i> 学号</th>
+                                <th><i class="fas fa-user"></i> 姓名</th>
+                                <th><i class="fas fa-venus-mars"></i> 性别</th>
+                                <th><i class="fas fa-birthday-cake"></i> 出生日期</th>
+                                <th><i class="fas fa-users"></i> 班级</th>
+                                <th class="text-center"><i class="fas fa-cogs"></i> 操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="fw-bold text-primary">@Html.DisplayFor(modelItem => item.StudentID)</td>
+                                <td>@Html.DisplayFor(modelItem => item.StudentName)</td>
+                                <td>
+                                    @if (item.Gender == "男")
+                                    {
+                                        <span class="badge bg-primary"><i class="fas fa-mars"></i> @item.Gender</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge" style="background-color: #ff69b4; color: white;"><i class="fas fa-venus"></i> @item.Gender</span>
+                                    }
+                                </td>
+                                <td>
+                                    <span class="text-muted">
+                                        <i class="fas fa-calendar"></i> @Html.DisplayFor(modelItem => item.BirthDate)
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">@Html.DisplayFor(modelItem => item.Class.ClassName)</span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Edit" asp-route-id="@item.StudentID" 
+                                           class="btn btn-outline-primary btn-sm" title="编辑学生">
+                                            <i class="fas fa-edit"></i> 编辑
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.StudentID" 
+                                           class="btn btn-outline-danger btn-sm" title="删除学生">
+                                            <i class="fas fa-trash"></i> 删除
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="fas fa-user-slash fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">暂无学生数据</h5>
+                    <p class="text-muted">点击上方"添加学生"按钮开始添加学生信息</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,78 @@
+@model StudentGradeManagementSystem.Models.Teacher
+
+@{ ViewData["Title"] = "删除教师"; }
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="mb-0"><i class="fas fa-trash-alt"></i> 删除教师</h3>
+                </div>
+                <div class="card-body">
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            <i class="fas fa-exclamation-triangle"></i> @TempData["ErrorMessage"]
+                        </div>
+                    }
+                    
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i> <strong>警告：</strong>确认要删除此教师吗？此操作不可撤销！
+                    </div>
+                    
+                    <!-- 教师信息展示 -->
+                    <div class="mb-4">
+                        <h5 class="text-muted mb-3"><i class="fas fa-chalkboard-teacher"></i> 教师信息</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label text-muted">教师ID</label>
+                                    <div class="form-control-plaintext bg-light p-2 rounded">
+                                        @Html.DisplayFor(model => model.TeacherID)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label text-muted">姓名</label>
+                                    <div class="form-control-plaintext bg-light p-2 rounded">
+                                        @Html.DisplayFor(model => model.TeacherName)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr />
+                    
+                    <!-- 删除选项 -->
+                    <form asp-action="Delete" method="post">
+                        <input type="hidden" asp-for="TeacherID" />
+                        
+                        <div class="mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="deleteRelatedRecords" value="true" id="deleteRelatedRecords">
+                                <label class="form-check-label" for="deleteRelatedRecords">
+                                    <i class="fas fa-link text-warning"></i> <strong>同时删除关联记录</strong>
+                                </label>
+                                <div class="form-text text-muted">
+                                    <i class="fas fa-info-circle"></i> 勾选此选项将同时处理该教师的所有成绩记录、课程关联和用户账户
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-arrow-left"></i> 取消
+                            </a>
+                            <button type="submit" class="btn btn-danger btn-lg" onclick="return confirm('确认删除此教师吗？此操作不可撤销！')">
+                                <i class="fas fa-trash-alt"></i> 确认删除
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

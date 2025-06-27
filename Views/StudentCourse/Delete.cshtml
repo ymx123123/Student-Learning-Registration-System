@@ -1,0 +1,86 @@
+@model StudentGradeManagementSystem.Models.StudentCourse
+
+@{
+    ViewData["Title"] = "删除选课";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-header bg-danger text-white">
+                    <h3 class="mb-0"><i class="fas fa-trash-alt"></i> 删除选课</h3>
+                </div>
+                <div class="card-body">
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            <i class="fas fa-exclamation-triangle"></i> @TempData["ErrorMessage"]
+                        </div>
+                    }
+                    
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i> <strong>警告：</strong>确认要删除此选课记录吗？此操作不可撤销！
+                    </div>
+                    
+                    <!-- 选课信息展示 -->
+                    <div class="mb-4">
+                        <h5 class="text-muted mb-3"><i class="fas fa-user-graduate"></i> 选课信息</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label text-muted">选课ID</label>
+                                    <div class="form-control-plaintext bg-light p-2 rounded">
+                                        @Model.EnrollmentID
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label text-muted">学生</label>
+                                    <div class="form-control-plaintext bg-light p-2 rounded">
+                                        @($"{@Model.StudentID} - {@Model.Student.StudentName}")
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label text-muted">课程</label>
+                                    <div class="form-control-plaintext bg-light p-2 rounded">
+                                        @($"{@Model.CourseID} - {@Model.Course.CourseName}")
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label text-muted">授课教师</label>
+                                    <div class="form-control-plaintext bg-light p-2 rounded">
+                                        @(Model.Course.Teacher != null ? $"{Model.Course.Teacher.TeacherID} - {Model.Course.Teacher.TeacherName}" : "未分配教师")
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr />
+                    
+                    <!-- 删除选项 -->
+                    <form asp-action="Delete" method="post">
+                        <input type="hidden" asp-for="EnrollmentID" />
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-arrow-left"></i> 返回列表
+                            </a>
+                            <button type="submit" class="btn btn-danger btn-lg" onclick="return confirm('确认删除此选课记录吗？此操作不可撤销！')">
+                                <i class="fas fa-trash-alt"></i> 确认删除
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

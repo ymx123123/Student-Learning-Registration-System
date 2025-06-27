@@ -1,0 +1,141 @@
+<div class="container mt-5">
+    <!-- 欢迎标题 -->
+    <div class="text-center mb-5">
+        <h1 class="display-4 text-primary mb-3">
+            <i class="fas fa-graduation-cap"></i> 学生成绩管理系统
+        </h1>
+        <p class="lead text-muted">高效管理学生信息、课程安排、教师资料和成绩记录</p>
+    </div>
+
+    <!-- 功能模块卡片 -->
+    <div class="row g-4">
+        <!-- 学生管理 -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 shadow-sm border-0 hover-card">
+                <div class="card-body text-center p-4">
+                    <div class="mb-3">
+                        <i class="fas fa-user-graduate fa-3x text-primary"></i>
+                    </div>
+                    <h5 class="card-title text-primary">学生管理</h5>
+                    <p class="card-text text-muted" style="font-size: 0.9rem;">管理学生基本信息、学号、班级等数据</p>
+                    <a href="/Student" class="btn btn-primary btn-lg w-100">
+                        <i class="fas fa-users"></i> 进入管理
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 课程管理 -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 shadow-sm border-0 hover-card">
+                <div class="card-body text-center p-4">
+                    <div class="mb-3">
+                        <i class="fas fa-book-open fa-3x text-success"></i>
+                    </div>
+                    <h5 class="card-title text-success">课程管理</h5>
+                    <p class="card-text text-muted">管理课程信息、学分、课程安排等</p>
+                    <a href="/Course" class="btn btn-success btn-lg w-100">
+                        <i class="fas fa-book"></i> 进入管理
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 教师管理 -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 shadow-sm border-0 hover-card">
+                <div class="card-body text-center p-4">
+                    <div class="mb-3">
+                        <i class="fas fa-chalkboard-teacher fa-3x text-info"></i>
+                    </div>
+                    <h5 class="card-title text-info">教师管理</h5>
+                    <p class="card-text text-muted">管理教师基本信息、工号等数据</p>
+                    <a href="/Teacher" class="btn btn-info btn-lg w-100">
+                        <i class="fas fa-user-tie"></i> 进入管理
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 成绩管理 -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 shadow-sm border-0 hover-card">
+                <div class="card-body text-center p-4">
+                    <div class="mb-3">
+                        <i class="fas fa-chart-line fa-3x text-warning"></i>
+                    </div>
+                    <h5 class="card-title text-warning">成绩管理</h5>
+                    <p class="card-text text-muted">录入和管理学生各科目成绩</p>
+                    <a href="/Grade" class="btn btn-warning btn-lg w-100">
+                        <i class="fas fa-star"></i> 进入管理
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 选课管理 -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 shadow-sm border-0 hover-card">
+                <div class="card-body text-center p-4">
+                    <div class="mb-3">
+                        <i class="fas fa-clipboard-list fa-3x text-danger"></i>
+                    </div>
+                    <h5 class="card-title text-danger">选课管理</h5>
+                    <p class="card-text text-muted">管理学生选课信息、课程分配等</p>
+                    <a href="/StudentCourse" class="btn btn-danger btn-lg w-100">
+                        <i class="fas fa-tasks"></i> 进入管理
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 用户管理 -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 shadow-sm border-0 hover-card">
+                <div class="card-body text-center p-4">
+                    <div class="mb-3">
+                        <i class="fas fa-users-cog fa-3x text-purple"></i>
+                    </div>
+                    <h5 class="card-title" style="color: #8e44ad;">用户管理</h5>
+                    <p class="card-text text-muted">管理系统用户账号、权限等</p>
+                    <a href="/User" class="btn btn-lg w-100" style="background-color: #8e44ad; color: white;">
+                        <i class="fas fa-user-shield"></i> 进入管理
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 系统统计信息 -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card bg-light border-0">
+                <div class="card-body text-center py-4">
+                    <h6 class="text-muted mb-0">
+                        <i class="fas fa-info-circle"></i> 
+                        系统提供完整的学生成绩管理解决方案，支持数据的增删改查操作
+                    </h6>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.hover-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.hover-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+}
+
+.display-4 {
+    font-weight: 600;
+}
+
+.card-title {
+    font-weight: 600;
+}
+</style>

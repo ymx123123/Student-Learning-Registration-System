@@ -1,0 +1,107 @@
+@{
+    ViewData["Title"] = "教师端 - 主页";
+    Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="jumbotron bg-success text-white">
+                <h1 class="display-4">欢迎，@ViewBag.TeacherName 老师！</h1>
+                <p class="lead">您好，欢迎使用学生成绩管理系统教师端。</p>
+                <hr class="my-4">
+                <p>在这里您可以管理您的课程和学生成绩。</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chalkboard-teacher"></i> 我的课程
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">查看您教授的所有课程和选课学生信息。</p>
+                    <a href="@Url.Action("MyCourses", "TeacherPortal")" class="btn btn-info">
+                        <i class="fas fa-eye"></i> 查看课程
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">
+                        <i class="fas fa-edit"></i> 成绩管理
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">为您教授课程的学生录入成绩。</p>
+                    <a href="@Url.Action("GradeManagement", "TeacherPortal")" class="btn btn-warning">
+                        <i class="fas fa-plus-circle"></i> 录入成绩
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-bar"></i> 成绩查看
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">查看您已录入的所有学生成绩。</p>
+                    <a href="@Url.Action("ViewGrades", "TeacherPortal")" class="btn btn-primary">
+                        <i class="fas fa-list"></i> 查看成绩
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle"></i> 系统说明
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h6><i class="fas fa-book"></i> 课程管理</h6>
+                            <ul>
+                                <li>查看您教授的所有课程</li>
+                                <li>查看每门课程的选课学生</li>
+                                <li>了解学生的基本信息和班级</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h6><i class="fas fa-star"></i> 成绩录入</h6>
+                            <ul>
+                                <li>为选课学生录入成绩</li>
+                                <li>成绩范围为0-100分</li>
+                                <li>每个学生每门课程只能录入一次成绩</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h6><i class="fas fa-chart-line"></i> 成绩管理</h6>
+                            <ul>
+                                <li>查看已录入的所有成绩</li>
+                                <li>按课程和学生分类显示</li>
+                                <li>成绩一旦录入无法修改</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,52 @@
+@model StudentGradeManagementSystem.Models.Course
+
+@{ ViewData["Title"] = "编辑课程"; }
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0"><i class="fas fa-edit"></i> 编辑课程</h3>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Edit">
+                        <input type="hidden" asp-for="CourseID" />
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger fw-bold" role="alert"></div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="CourseName" class="form-label"><i class="fas fa-book"></i> @Html.DisplayNameFor(model => model.CourseName)</label>
+                            <input asp-for="CourseName" class="form-control" placeholder="请输入课程名称" />
+                            <span asp-validation-for="CourseName" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Credit" class="form-label"><i class="fas fa-star"></i> @Html.DisplayNameFor(model => model.Credit)</label>
+                            <input asp-for="Credit" class="form-control" type="number" min="1" max="10" placeholder="请输入学分" />
+                            <span asp-validation-for="Credit" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="TeacherID" class="form-label"><i class="fas fa-user-tie"></i> @Html.DisplayNameFor(model => model.TeacherID)</label>
+                            <select asp-for="TeacherID" class="form-select" asp-items="ViewBag.TeacherList"></select>
+                            <span asp-validation-for="TeacherID" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="fas fa-arrow-left"></i> 返回课程列表
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> 保存课程
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

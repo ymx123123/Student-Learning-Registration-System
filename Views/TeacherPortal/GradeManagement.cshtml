@@ -1,0 +1,365 @@
+@model List<Course>
+@{
+    ViewData["Title"] = "成绩管理";
+    Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2><i class="fas fa-edit"></i> 成绩管理</h2>
+                <a href="@Url.Action("Index", "TeacherPortal")" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> 返回主页
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 错误信息显示 -->
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- 成功信息显示 -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (ViewBag.Courses != null && ((List<Course>)ViewBag.Courses).Count > 0)
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list"></i> 选择课程录入成绩
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group mb-3">
+                            <label for="courseSelect" class="form-label">选择课程：</label>
+                            <select class="form-select" id="courseSelect" onchange="loadStudents()">
+                                <option value="">-- 请选择课程 --</option>
+                                @foreach (var course in (List<Course>)ViewBag.Courses)
+                                {
+                                    <option value="@course.CourseID">@course.CourseName (学分: @course.Credit)</option>
+                                }
+                            </select>
+                        </div>
+                        
+                        <!-- 学生列表区域 -->
+                        <div id="studentsArea" style="display: none;">
+                            <hr>
+                            <h6><i class="fas fa-users"></i> 选课学生列表：</h6>
+                            <div id="studentsTable"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 成绩录入模态框 -->
+        <div class="modal fade" id="gradeModal" tabindex="-1" aria-labelledby="gradeModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="gradeModalLabel">
+                            <i class="fas fa-edit"></i> 录入成绩
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form id="gradeForm" method="post" action="@Url.Action("AddGrade", "TeacherPortal")">
+                        <div class="modal-body">
+                            <input type="hidden" id="modalStudentId" name="studentId" />
+                            <input type="hidden" id="modalCourseId" name="courseId" />
+                            
+                            <div class="form-group mb-3">
+                                <label class="form-label">学生信息：</label>
+                                <p id="studentInfo" class="form-control-plaintext"></p>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label class="form-label">课程信息：</label>
+                                <p id="courseInfo" class="form-control-plaintext"></p>
+                            </div>
+                            
+                            <div class="form-group mb-3">
+                                <label for="gradeValue" class="form-label">成绩 (0-100)：</label>
+                                <input type="number" class="form-control" id="gradeValue" name="gradeValue" 
+                                       min="0" max="100" step="0.1" required>
+                                <small class="form-text text-muted">请输入0-100之间的数值，支持小数</small>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                <i class="fas fa-times"></i> 取消
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> 保存成绩
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-warning">
+                    <h4><i class="fas fa-exclamation-triangle"></i> 暂无课程</h4>
+                    <p>您目前没有教授任何课程，无法录入成绩。请联系管理员为您分配课程。</p>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- 说明信息 -->
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="alert alert-info">
+                <h6><i class="fas fa-info-circle"></i> 成绩录入说明：</h6>
+                <ul class="mb-0">
+                    <li>请先选择要录入成绩的课程</li>
+                    <li>成绩范围为0-100分，支持小数</li>
+                    <li>每个学生每门课程只能录入一次成绩</li>
+                    <li>成绩一旦录入无法修改，请谨慎操作</li>
+                    <li>只能为选择了您课程的学生录入成绩</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function loadStudents() {
+            var courseId = document.getElementById('courseSelect').value;
+            
+            if (!courseId) {
+                document.getElementById('studentsArea').style.display = 'none';
+                return;
+            }
+            
+            // 显示加载中
+            var studentsTable = document.getElementById('studentsTable');
+            studentsTable.innerHTML = '<div class="text-center"><i class="fas fa-spinner fa-spin"></i> 加载中...</div>';
+            document.getElementById('studentsArea').style.display = 'block';
+            
+            // 构建请求URL
+            var requestUrl = '@Url.Action("GetCourseStudents", "TeacherPortal")?courseId=' + encodeURIComponent(courseId);
+            
+            // 使用原生fetch API替代jQuery
+            fetch(requestUrl, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (data.students && data.students.length > 0) {
+                        createStudentsTable(data.students, courseId);
+                    } else {
+                        studentsTable.innerHTML = '<div class="alert alert-info">该课程暂无学生选课。</div>';
+                    }
+                } else {
+                    studentsTable.innerHTML = '<div class="alert alert-danger">' + escapeHtml(data.message || '获取学生列表失败') + '</div>';
+                }
+            })
+            .catch(error => {
+                studentsTable.innerHTML = '<div class="alert alert-danger">加载学生列表失败，请重试。</div>';
+            });
+        }
+        
+        function createStudentsTable(students, courseId) {
+            var studentsTable = document.getElementById('studentsTable');
+            
+            // 创建表格容器
+            var tableContainer = document.createElement('div');
+            tableContainer.className = 'table-responsive';
+            
+            // 创建表格
+            var table = document.createElement('table');
+            table.className = 'table table-striped table-hover';
+            
+            // 创建表头
+            var thead = document.createElement('thead');
+            thead.className = 'table-success';
+            var headerRow = document.createElement('tr');
+            
+            var headers = ['学号', '姓名', '班级', '状态', '操作'];
+            headers.forEach(function(headerText) {
+                var th = document.createElement('th');
+                th.textContent = headerText;
+                headerRow.appendChild(th);
+            });
+            
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+            
+            // 创建表体
+            var tbody = document.createElement('tbody');
+            
+            students.forEach(function(student, index) {
+                var row = document.createElement('tr');
+                
+                // 学号
+                var studentIdCell = document.createElement('td');
+                var studentIdValue = student.StudentID || student.studentID || student.studentId || '';
+                studentIdCell.textContent = studentIdValue;
+                row.appendChild(studentIdCell);
+                
+                // 姓名
+                var nameCell = document.createElement('td');
+                var studentNameValue = student.StudentName || student.studentName || student.name || '';
+                nameCell.textContent = studentNameValue;
+                row.appendChild(nameCell);
+                
+                // 班级
+                var classCell = document.createElement('td');
+                var classNameValue = student.ClassName || student.className || student.class || '未分配';
+                classCell.textContent = classNameValue;
+                row.appendChild(classCell);
+                
+                // 状态
+                var statusCell = document.createElement('td');
+                var statusBadge = document.createElement('span');
+                var hasGradeValue = student.HasGrade || student.hasGrade || false;
+                statusBadge.className = hasGradeValue ? 'badge bg-success' : 'badge bg-warning';
+                statusBadge.textContent = hasGradeValue ? '已录入' : '未录入';
+                statusCell.appendChild(statusBadge);
+                row.appendChild(statusCell);
+                
+                // 操作
+                var actionCell = document.createElement('td');
+                if (!hasGradeValue) {
+                    var button = document.createElement('button');
+                    button.className = 'btn btn-primary btn-sm';
+                    button.innerHTML = '<i class="fas fa-plus"></i> 录入成绩';
+                    
+                    // 使用闭包保存变量
+                    (function(studentId, studentName, cId) {
+                        button.addEventListener('click', function() {
+                            var courseSelect = document.getElementById('courseSelect');
+                            var courseName = courseSelect.options[courseSelect.selectedIndex].text;
+                            openGradeModal(studentId, studentName, cId, courseName);
+                        });
+                    })(studentIdValue, studentNameValue, courseId);
+                    
+                    actionCell.appendChild(button);
+                } else {
+                    var span = document.createElement('span');
+                    span.className = 'text-muted';
+                    span.textContent = '已录入';
+                    actionCell.appendChild(span);
+                }
+                row.appendChild(actionCell);
+                
+                tbody.appendChild(row);
+            });
+            
+            table.appendChild(tbody);
+            tableContainer.appendChild(table);
+            
+            // 清空并添加新表格
+            studentsTable.innerHTML = '';
+            studentsTable.appendChild(tableContainer);
+        }
+        
+        function escapeHtml(text) {
+            var div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function openGradeModal(studentId, studentName, courseId, courseName) {
+            document.getElementById('modalStudentId').value = studentId;
+            document.getElementById('modalCourseId').value = courseId;
+            document.getElementById('studentInfo').textContent = studentName + ' (学号: ' + studentId + ')';
+            document.getElementById('courseInfo').textContent = courseName + ' (课程编号: ' + courseId + ')';
+            document.getElementById('gradeValue').value = '';
+            
+            var modal = new bootstrap.Modal(document.getElementById('gradeModal'));
+            modal.show();
+        }
+        
+        // 表单提交验证 - 使用DOMContentLoaded确保元素存在
+        document.addEventListener('DOMContentLoaded', function() {
+            var gradeForm = document.getElementById('gradeForm');
+            if (gradeForm) {
+                gradeForm.addEventListener('submit', function(e) {
+                    e.preventDefault(); // 阻止默认表单提交
+                    
+                    var gradeValue = parseFloat(document.getElementById('gradeValue').value);
+                    if (isNaN(gradeValue) || gradeValue < 0 || gradeValue > 100) {
+                        alert('请输入0-100之间的有效成绩！');
+                        return false;
+                    }
+                    
+                    if (!confirm('确定要录入该成绩吗？成绩一旦录入无法修改！')) {
+                        return false;
+                    }
+                    
+                    // 使用AJAX提交表单
+                    submitGradeForm();
+                });
+            }
+        });
+        
+        function submitGradeForm() {
+            var form = document.getElementById('gradeForm');
+            var formData = new FormData(form);
+            
+            // 显示提交中状态
+            var submitBtn = form.querySelector('button[type="submit"]');
+            var originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '提交中...';
+            submitBtn.disabled = true;
+            
+            fetch(form.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    
+                    // 关闭模态框
+                    var modal = bootstrap.Modal.getInstance(document.getElementById('gradeModal'));
+                    if (modal) {
+                        modal.hide();
+                    }
+                    
+                    // 重新加载学生列表以更新状态
+                    var courseSelect = document.getElementById('courseSelect');
+                    if (courseSelect.value) {
+                        loadStudents(courseSelect.value);
+                    }
+                } else {
+                    alert('错误：' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('提交失败，请重试！');
+            })
+            .finally(() => {
+                // 恢复按钮状态
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            });
+        }
+    </script>
+}

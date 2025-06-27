@@ -1,0 +1,284 @@
+@model List<Grade>
+@{
+    ViewData["Title"] = "查看成绩";
+    Layout = "~/Views/Shared/_TeacherLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2><i class="fas fa-chart-bar"></i> 查看成绩</h2>
+                <a href="@Url.Action("Index", "TeacherPortal")" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> 返回主页
+                </a>
+            </div>
+        </div>
+    </div>
+
+    @if (Model != null && Model.Count > 0)
+    {
+        <!-- 筛选区域 -->
+        <div class="row mb-3">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h6 class="mb-0">
+                            <i class="fas fa-filter"></i> 筛选条件
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="courseFilter" class="form-label">按课程筛选：</label>
+                                <select class="form-select" id="courseFilter" onchange="filterGrades()">
+                                    <option value="">-- 所有课程 --</option>
+                                    @foreach (var course in Model.Select(g => g.Course).Distinct())
+                                    {
+                                        <option value="@course.CourseID">@course.CourseName</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="gradeFilter" class="form-label">按成绩筛选：</label>
+                                <select class="form-select" id="gradeFilter" onchange="filterGrades()">
+                                    <option value="">-- 所有成绩 --</option>
+                                    <option value="excellent">优秀 (90-100)</option>
+                                    <option value="good">良好 (80-89)</option>
+                                    <option value="medium">中等 (70-79)</option>
+                                    <option value="pass">及格 (60-69)</option>
+                                    <option value="fail">不及格 (0-59)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="searchStudent" class="form-label">搜索学生：</label>
+                                <input type="text" class="form-control" id="searchStudent" placeholder="输入学生姓名或学号" onkeyup="filterGrades()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 成绩列表 -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-list"></i> 成绩列表
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover" id="gradesTable">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>学号</th>
+                                        <th>学生姓名</th>
+                                        <th>课程名称</th>
+                                        <th>学分</th>
+                                        <th>成绩</th>
+                                        <th>等级</th>
+                                        <th>状态</th>
+                                        <th>录入时间</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var grade in Model.OrderBy(g => g.Course.CourseName).ThenBy(g => g.Student.StudentName))
+                                    {
+                                        <tr data-course="@grade.CourseID" data-grade="@grade.GradeValue" data-student="@grade.Student.StudentName @grade.Student.StudentID">
+                                            <td>@grade.Student.StudentID</td>
+                                            <td>@grade.Student.StudentName</td>
+                                            <td>@grade.Course.CourseName</td>
+                                            <td>@grade.Course.Credit</td>
+                                            <td>
+                                                <span class="badge @(grade.GradeValue >= 90 ? "bg-success" : 
+                                                                    grade.GradeValue >= 80 ? "bg-primary" : 
+                                                                    grade.GradeValue >= 70 ? "bg-info" : 
+                                                                    grade.GradeValue >= 60 ? "bg-warning" : "bg-danger")">
+                                                    @grade.GradeValue
+                                                </span>
+                                            </td>
+                                            <td>
+                                                @if (grade.GradeValue >= 90)
+                                                {
+                                                    <span class="text-success">优秀</span>
+                                                }
+                                                else if (grade.GradeValue >= 80)
+                                                {
+                                                    <span class="text-primary">良好</span>
+                                                }
+                                                else if (grade.GradeValue >= 70)
+                                                {
+                                                    <span class="text-info">中等</span>
+                                                }
+                                                else if (grade.GradeValue >= 60)
+                                                {
+                                                    <span class="text-warning">及格</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-danger">不及格</span>
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (grade.GradeValue >= 60)
+                                                {
+                                                    <span class="badge bg-success">通过</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge bg-danger">未通过</span>
+                                                }
+                                            </td>
+                                            <td>@DateTime.Now.ToString("yyyy-MM-dd")</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 统计信息 -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-pie"></i> 成绩统计
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="text-center">
+                                    <h4 class="text-primary">@Model.Count</h4>
+                                    <p>总成绩数</p>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="text-center">
+                                    <h4 class="text-success">@Model.Count(g => g.GradeValue >= 90)</h4>
+                                    <p>优秀</p>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="text-center">
+                                    <h4 class="text-primary">@Model.Count(g => g.GradeValue >= 80 && g.GradeValue < 90)</h4>
+                                    <p>良好</p>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="text-center">
+                                    <h4 class="text-info">@Model.Count(g => g.GradeValue >= 70 && g.GradeValue < 80)</h4>
+                                    <p>中等</p>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="text-center">
+                                    <h4 class="text-warning">@Model.Count(g => g.GradeValue >= 60 && g.GradeValue < 70)</h4>
+                                    <p>及格</p>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="text-center">
+                                    <h4 class="text-danger">@Model.Count(g => g.GradeValue < 60)</h4>
+                                    <p>不及格</p>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <h4 class="text-success">@Model.Count(g => g.GradeValue >= 60)</h4>
+                                    <p>通过人数</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <h4 class="text-danger">@Model.Count(g => g.GradeValue < 60)</h4>
+                                    <p>未通过人数</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <h4 class="text-info">@(Model.Count > 0 ? Math.Round(Model.Average(g => g.GradeValue), 2) : 0)</h4>
+                                    <p>平均分</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-warning">
+                    <h4><i class="fas fa-exclamation-triangle"></i> 暂无成绩记录</h4>
+                    <p>您还没有录入任何学生成绩。</p>
+                    <a href="@Url.Action("GradeManagement", "TeacherPortal")" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> 去录入成绩
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function filterGrades() {
+            var courseFilter = document.getElementById('courseFilter').value;
+            var gradeFilter = document.getElementById('gradeFilter').value;
+            var searchStudent = document.getElementById('searchStudent').value.toLowerCase();
+            
+            var rows = document.querySelectorAll('#gradesTable tbody tr');
+            
+            rows.forEach(function(row) {
+                var show = true;
+                
+                // 课程筛选
+                if (courseFilter && row.getAttribute('data-course') !== courseFilter) {
+                    show = false;
+                }
+                
+                // 成绩筛选
+                if (gradeFilter) {
+                    var grade = parseFloat(row.getAttribute('data-grade'));
+                    switch(gradeFilter) {
+                        case 'excellent':
+                            if (grade < 90) show = false;
+                            break;
+                        case 'good':
+                            if (grade < 80 || grade >= 90) show = false;
+                            break;
+                        case 'medium':
+                            if (grade < 70 || grade >= 80) show = false;
+                            break;
+                        case 'pass':
+                            if (grade < 60 || grade >= 70) show = false;
+                            break;
+                        case 'fail':
+                            if (grade >= 60) show = false;
+                            break;
+                    }
+                }
+                
+                // 学生搜索
+                if (searchStudent && !row.getAttribute('data-student').toLowerCase().includes(searchStudent)) {
+                    show = false;
+                }
+                
+                row.style.display = show ? '' : 'none';
+            });
+        }
+    </script>
+}

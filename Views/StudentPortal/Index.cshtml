@@ -1,0 +1,83 @@
+@{
+    ViewData["Title"] = "学生端 - 主页";
+    Layout = "~/Views/Shared/_StudentLayout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="jumbotron bg-primary text-white">
+                <h1 class="display-4">欢迎，@ViewBag.StudentName！</h1>
+                <p class="lead">您好，欢迎使用学生成绩管理系统学生端。</p>
+                <hr class="my-4">
+                <p>班级：@ViewBag.ClassName</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-book"></i> 选课管理
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">查看可选课程，进行选课和退选操作。</p>
+                    <a href="@Url.Action("CourseSelection", "StudentPortal")" class="btn btn-info">
+                        <i class="fas fa-plus-circle"></i> 进入选课
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-line"></i> 成绩查询
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">查看您的课程成绩和学习情况。</p>
+                    <a href="@Url.Action("ViewGrades", "StudentPortal")" class="btn btn-success">
+                        <i class="fas fa-eye"></i> 查看成绩
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle"></i> 系统说明
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-graduation-cap"></i> 选课说明</h6>
+                            <ul>
+                                <li>每门课程只能选择一次，即使是不同老师教授的同名课程</li>
+                                <li>可以随时退选已选择的课程</li>
+                                <li>选课后可以在成绩查询中查看相关成绩</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-star"></i> 成绩说明</h6>
+                            <ul>
+                                <li>成绩由任课教师录入</li>
+                                <li>成绩范围为0-100分</li>
+                                <li>可以查看所有已录入成绩的课程</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,123 @@
+@model IEnumerable<StudentGradeManagementSystem.Models.Grade>
+
+@{  
+    ViewData["Title"] = "成绩信息管理";  
+}  
+
+<div class="container mt-4">  
+    <div class="d-flex justify-content-between align-items-center mb-4">  
+        <h2 class="text-primary"><i class="fas fa-chart-line"></i> 成绩信息管理</h2>  
+        <div>  
+            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary me-2">  
+                <i class="fas fa-home"></i> 返回主页  
+            </a>  
+            <a asp-action="Create" class="btn btn-success">  
+                <i class="fas fa-plus"></i> 添加成绩  
+            </a>  
+        </div>  
+    </div>  
+
+    <!-- 搜索表单 -->  
+    <div class="card mb-4">  
+        <div class="card-body">  
+            <form method="get" class="row g-3">  
+                <div class="col-md-4">  
+                    <div class="input-group">  
+                        <span class="input-group-text"><i class="fas fa-user"></i></span>  
+                        <input type="text" name="studentId" class="form-control" placeholder="请输入学生ID..." value="@Context.Request.Query["studentId"]" />  
+                    </div>  
+                </div>  
+                <div class="col-md-4">  
+                    <div class="input-group">  
+                        <span class="input-group-text"><i class="fas fa-book"></i></span>  
+                        <input type="text" name="courseId" class="form-control" placeholder="请输入课程ID..." value="@Context.Request.Query["courseId"]" />  
+                    </div>  
+                </div>  
+                <div class="col-md-4">  
+                    <button type="submit" class="btn btn-primary w-100">  
+                        <i class="fas fa-search"></i> 搜索成绩  
+                    </button>  
+                </div>  
+            </form>  
+        </div>  
+    </div>
+
+    <!-- 成绩列表 -->  
+    <div class="card">  
+        <div class="card-header bg-light">  
+            <h5 class="mb-0"><i class="fas fa-list"></i> 成绩列表</h5>  
+        </div>  
+        <div class="card-body p-0">  
+            @if (Model.Any())  
+            {  
+                <div class="table-responsive">  
+                    <table class="table table-hover mb-0">  
+                        <thead class="table-dark">  
+                            <tr>  
+                                <th><i class="fas fa-hashtag"></i> 成绩编号</th>  
+                                <th><i class="fas fa-user-graduate"></i> 学生姓名</th>  
+                                <th><i class="fas fa-book-open"></i> 课程名称</th>  
+                                <th><i class="fas fa-chalkboard-teacher"></i> 任课老师</th>  
+                                <th><i class="fas fa-star"></i> 成绩</th>  
+                                <th class="text-center"><i class="fas fa-cogs"></i> 操作</th>  
+                            </tr>  
+                        </thead>  
+                        <tbody>  
+                        @foreach (var item in Model)  
+                        {  
+                            <tr>  
+                                <td class="fw-bold text-primary">@Html.DisplayFor(modelItem => item.GradeID)</td>  
+                                <td>  
+                                    <i class="fas fa-user text-muted me-2"></i>  
+                                    @(item.Student != null ? $"{item.Student.StudentID} - {item.Student.StudentName}" : "未知学生")  
+                                </td>  
+                                <td>  
+                                    <span class="badge bg-info">@(item.Course != null ? item.Course.CourseName : "未知课程")</span>  
+                                </td>  
+                                <td>  
+                                    <i class="fas fa-user-tie text-muted me-2"></i>  
+                                    @(item.Teacher != null ? $"{item.Teacher.TeacherID} - {item.Teacher.TeacherName}" : "未知教师")  
+                                </td>  
+                                <td>  
+                                    @{  
+                                        var gradeValue = item.GradeValue;  
+                                        string badgeClass = "bg-secondary";  
+                                        if (gradeValue >= 90) badgeClass = "bg-success";  
+                                        else if (gradeValue >= 80) badgeClass = "bg-primary";  
+                                        else if (gradeValue >= 70) badgeClass = "bg-warning";  
+                                        else if (gradeValue >= 60) badgeClass = "bg-info";  
+                                        else badgeClass = "bg-danger";  
+                                    }  
+                                    <span class="badge @badgeClass">  
+                                        <i class="fas fa-star"></i> @Html.DisplayFor(modelItem => item.GradeValue)  
+                                    </span>  
+                                </td>  
+                                <td class="text-center">  
+                                    <div class="btn-group" role="group">  
+                                        <a asp-action="Edit" asp-route-id="@item.GradeID"   
+                                           class="btn btn-outline-primary btn-sm" title="编辑成绩">  
+                                            <i class="fas fa-edit"></i> 编辑  
+                                        </a>  
+                                        <a asp-action="Delete" asp-route-id="@item.GradeID"   
+                                           class="btn btn-outline-danger btn-sm" title="删除成绩">  
+                                            <i class="fas fa-trash"></i> 删除  
+                                        </a>  
+                                    </div>  
+                                </td>  
+                            </tr>  
+                        }  
+                        </tbody>  
+                    </table>  
+                </div>  
+            }  
+            else  
+            {  
+                <div class="text-center py-5">  
+                    <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>  
+                    <h5 class="text-muted">暂无成绩数据</h5>  
+                    <p class="text-muted">点击上方"添加成绩"按钮开始录入成绩信息</p>  
+                </div>  
+            }  
+        </div>  
+    </div>  
+</div>

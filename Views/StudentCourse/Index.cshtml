@@ -1,0 +1,112 @@
+@model IEnumerable<StudentGradeManagementSystem.Models.StudentCourse>
+
+@{
+    ViewData["Title"] = "选课管理";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>选课管理</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">添加选课</a>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary"><i class="fas fa-home"></i> 返回首页</a>
+</p>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-filter"></i>
+        筛选选项
+    </div>
+    <div class="card-body">
+        <form asp-action="Index" method="get">
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <label class="control-label">学生</label>
+                        <select name="studentId" class="form-control" asp-items="ViewBag.StudentSelectList"></select>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <label class="control-label">课程</label>
+                        <select name="courseId" class="form-control" asp-items="ViewBag.CourseSelectList"></select>
+                    </div>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <div class="form-group">
+                        <input type="submit" value="筛选" class="btn btn-primary" />
+                        <a asp-action="Index" class="btn btn-secondary">重置</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-table me-1"></i>
+        选课列表
+    </div>
+    <div class="card-body">
+        <table class="table table-bordered table-striped" id="dataTable">
+            <thead>
+                <tr>
+                    <th>选课ID</th>
+                    <th>学生ID</th>
+                    <th>学生姓名</th>
+                    <th>课程ID</th>
+                    <th>课程名称</th>
+                    <th>授课教师</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.EnrollmentID</td>
+                        <td>@item.StudentID</td>
+                        <td>@item.Student.StudentName</td>
+                        <td>@item.CourseID</td>
+                        <td>@item.Course.CourseName</td>
+                        <td>@(item.Course.Teacher != null ? $"{item.Course.Teacher.TeacherID} - {item.Course.Teacher.TeacherName}" : "未分配教师")</td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.EnrollmentID" class="btn btn-primary btn-sm">编辑</a> |
+                            <a asp-action="Delete" asp-route-id="@item.EnrollmentID" class="btn btn-danger btn-sm">删除</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#dataTable').DataTable({
+                language: {
+                    "sProcessing": "处理中...",
+                    "sLengthMenu": "显示 _MENU_ 项结果",
+                    "sZeroRecords": "没有匹配结果",
+                    "sInfo": "显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项",
+                    "sInfoEmpty": "显示第 0 至 0 项结果，共 0 项",
+                    "sInfoFiltered": "(由 _MAX_ 项结果过滤)",
+                    "sInfoPostFix": "",
+                    "sSearch": "搜索:",
+                    "sUrl": "",
+                    "sEmptyTable": "表中数据为空",
+                    "sLoadingRecords": "载入中...",
+                    "sInfoThousands": ",",
+                    "oPaginate": {
+                        "sFirst": "首页",
+                        "sPrevious": "上页",
+                        "sNext": "下页",
+                        "sLast": "末页"
+                    }
+                }
+            });
+        });
+    </script>
+}

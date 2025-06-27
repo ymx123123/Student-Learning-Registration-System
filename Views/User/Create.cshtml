@@ -1,0 +1,88 @@
+@model StudentGradeManagementSystem.Models.User
+
+@{
+    ViewData["Title"] = "创建用户";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <h2>创建新用户</h2>
+    
+
+
+    <div class="row">
+        <div class="col-md-8">
+            <form asp-action="Create" asp-controller="User" method="post">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group">
+                    <label asp-for="Role" class="control-label">用户角色</label>
+                    <select asp-for="Role" class="form-control" id="roleSelect">
+                        <option value="">-- 请选择角色 --</option>
+                        <option value="学生">学生</option>
+                        <option value="老师">老师</option>
+                        <option value="管理员">管理员</option>
+                    </select>
+                    <span asp-validation-for="Role" class="text-danger"></span>
+                </div>
+
+                <div class="form-group" id="studentIdGroup" style="display:none;">
+                    <label asp-for="StudentID" class="control-label">学生</label>
+                    <select asp-for="StudentID" class="form-control" asp-items="ViewBag.StudentList">
+                        <option value="">-- 请选择学生 --</option>
+                    </select>
+                    <span asp-validation-for="StudentID" class="text-danger"></span>
+                </div>
+
+                <div class="form-group" id="teacherIdGroup" style="display:none;">
+                    <label asp-for="TeacherID" class="control-label">教师</label>
+                    <select asp-for="TeacherID" class="form-control" asp-items="ViewBag.TeacherList">
+                        <option value="">-- 请选择教师 --</option>
+                    </select>
+                    <span asp-validation-for="TeacherID" class="text-danger"></span>
+                </div>
+
+                <div class="form-group" id="usernameGroup" style="display:none;">
+                    <label asp-for="Username" class="control-label">用户名</label>
+                    <input asp-for="Username" class="form-control" />
+                    <span asp-validation-for="Username" class="text-danger"></span>
+                    <small class="form-text text-muted">学生和教师用户名将自动设置为其ID</small>
+                </div>
+
+                <div class="form-group">
+                    <p><strong>注意：</strong>新用户的默认密码将设置为 "123456"</p>
+                </div>
+
+                <div class="form-group">
+                    <input type="submit" value="创建" class="btn btn-primary" />
+                    <a asp-action="Index" class="btn btn-secondary">返回列表</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const roleSelect = document.getElementById('roleSelect');
+        const studentGroup = document.getElementById('studentIdGroup');
+        const teacherGroup = document.getElementById('teacherIdGroup');
+        const adminGroup = document.getElementById('usernameGroup');
+        
+        function toggleFields() {
+            const selectedRole = roleSelect.value;
+            
+            studentGroup.style.display = selectedRole === '学生' ? 'block' : 'none';
+            teacherGroup.style.display = selectedRole === '老师' ? 'block' : 'none';
+            adminGroup.style.display = selectedRole === '管理员' ? 'block' : 'none';
+        }
+        
+        roleSelect.addEventListener('change', toggleFields);
+        toggleFields(); // 初始调用
+    });
+    </script>
+}
