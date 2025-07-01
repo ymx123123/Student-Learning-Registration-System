@@ -8,11 +8,11 @@ namespace StudentGradeManagementSystem.Models
         [Display(Name = "课程编号")]
         public int CourseID { get; set; }
         
-        [Required(ErrorMessage = "课程名称不能为空")]
+        [Required(ErrorMessage = "课程名称不能为空!")]
         [Display(Name = "课程名称")]
         public string CourseName { get; set; }
         
-        [Required(ErrorMessage = "学分不能为空")]
+        [Required(ErrorMessage = "学分不能为空!")]
         [Display(Name = "学分")]
         public int Credit { get; set; } // 保证与数据库一致
         
