@@ -58,7 +58,13 @@
                                 <th><i class="fas fa-user-graduate"></i> 学生姓名</th>  
                                 <th><i class="fas fa-book-open"></i> 课程名称</th>  
                                 <th><i class="fas fa-chalkboard-teacher"></i> 任课老师</th>  
-                                <th><i class="fas fa-star"></i> 成绩</th>  
+                                <th><i class="fas fa-star"></i> 课堂表现</th>  
+                                <th><i class="fas fa-star"></i> 实验</th>  
+                                <th><i class="fas fa-star"></i> 作业</th>  
+                                <th><i class="fas fa-star"></i> 大作业</th>  
+                                <th><i class="fas fa-star"></i> 加分</th>  
+                                <th><i class="fas fa-star"></i> 最终成绩</th>  
+                                <th><i class="fas fa-star"></i> 等级</th>  
                                 <th class="text-center"><i class="fas fa-cogs"></i> 操作</th>  
                             </tr>  
                         </thead>  
@@ -78,20 +84,13 @@
                                     <i class="fas fa-user-tie text-muted me-2"></i>  
                                     @(item.Teacher != null ? $"{item.Teacher.TeacherID} - {item.Teacher.TeacherName}" : "未知教师")  
                                 </td>  
-                                <td>  
-                                    @{  
-                                        var gradeValue = item.GradeValue;  
-                                        string badgeClass = "bg-secondary";  
-                                        if (gradeValue >= 90) badgeClass = "bg-success";  
-                                        else if (gradeValue >= 80) badgeClass = "bg-primary";  
-                                        else if (gradeValue >= 70) badgeClass = "bg-warning";  
-                                        else if (gradeValue >= 60) badgeClass = "bg-info";  
-                                        else badgeClass = "bg-danger";  
-                                    }  
-                                    <span class="badge @badgeClass">  
-                                        <i class="fas fa-star"></i> @Html.DisplayFor(modelItem => item.GradeValue)  
-                                    </span>  
-                                </td>  
+                                <td>@item.ClassPerformance.ToString("F1")</td>  
+                                <td>@item.ExperimentGrade.ToString("F1")</td>  
+                                <td>@item.HomeworkGrade.ToString("F1")</td>  
+                                <td>@item.MajorAssignmentGrade.ToString("F1")</td>  
+                                <td>@((item.RegularBonus + item.SpecialBonus).ToString("F1"))</td>  
+                                <td><strong>@item.GradeValue.ToString("F1")</strong></td>  
+                                <td><span class="badge bg-@(item.GradeLevel == "A" ? "success" : item.GradeLevel == "B" ? "primary" : item.GradeLevel == "C" ? "warning" : item.GradeLevel == "D" ? "secondary" : "danger")">@item.GradeLevel</span></td>  
                                 <td class="text-center">  
                                     <div class="btn-group" role="group">  
                                         <a asp-action="Edit" asp-route-id="@item.GradeID"   

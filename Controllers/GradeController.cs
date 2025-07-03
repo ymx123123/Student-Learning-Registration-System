@@ -103,7 +103,10 @@ namespace StudentGradeManagementSystem.Controllers
         // 处理添加成绩请求
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(int studentId, int courseId, int teacherId, decimal gradeValue)
+        public async Task<IActionResult> Create(int studentId, int courseId, int teacherId, 
+            decimal? ClassPerformance, decimal? ExperimentGrade, decimal? HomeworkGrade, 
+            decimal? MajorAssignmentGrade, decimal? RegularBonus, decimal? SpecialBonus, 
+            string SpecialBonusReason)
         {
             if (!CheckLogin())
             {
@@ -120,19 +123,18 @@ namespace StudentGradeManagementSystem.Controllers
                 return RedirectToAction("Create", new { studentId = studentId });
             }
             
-            // 验证成绩范围
-            if (gradeValue < 0 || gradeValue > 100)
-            {
-                ModelState.AddModelError("", "成绩必须在0-100之间");
-                return RedirectToAction("Create", new { studentId = studentId });
-            }
-            
             var grade = new Grade
             {
                 StudentID = studentId,
                 CourseID = courseId,
                 TeacherID = teacherId,
-                GradeValue = gradeValue
+                ClassPerformance = ClassPerformance ?? 0,
+                ExperimentGrade = ExperimentGrade ?? 0,
+                HomeworkGrade = HomeworkGrade ?? 0,
+                MajorAssignmentGrade = MajorAssignmentGrade ?? 0,
+                RegularBonus = RegularBonus ?? 0,
+                SpecialBonus = SpecialBonus ?? 0,
+                SpecialBonusReason = SpecialBonusReason
             };
             
             _context.Add(grade);
@@ -170,18 +172,13 @@ namespace StudentGradeManagementSystem.Controllers
         // 处理编辑成绩请求
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, decimal gradeValue)
+        public async Task<IActionResult> Edit(int id, decimal? ClassPerformance, decimal? ExperimentGrade, 
+            decimal? HomeworkGrade, decimal? MajorAssignmentGrade, decimal? RegularBonus, 
+            decimal? SpecialBonus, string SpecialBonusReason)
         {
             if (!CheckLogin())
             {
                 return RedirectToAction("Index", "Login");
-            }
-            
-            // 验证成绩范围
-            if (gradeValue < 0 || gradeValue > 100)
-            {
-                ModelState.AddModelError("", "成绩必须在0-100之间");
-                return RedirectToAction("Edit", new { id = id });
             }
             
             var grade = await _context.Grades.FindAsync(id);
@@ -190,8 +187,14 @@ namespace StudentGradeManagementSystem.Controllers
                 return NotFound();
             }
             
-            // 只更新成绩值
-            grade.GradeValue = gradeValue;
+            // 更新各项成绩
+            grade.ClassPerformance = ClassPerformance ?? grade.ClassPerformance;
+            grade.ExperimentGrade = ExperimentGrade ?? grade.ExperimentGrade;
+            grade.HomeworkGrade = HomeworkGrade ?? grade.HomeworkGrade;
+            grade.MajorAssignmentGrade = MajorAssignmentGrade ?? grade.MajorAssignmentGrade;
+            grade.RegularBonus = RegularBonus ?? grade.RegularBonus;
+            grade.SpecialBonus = SpecialBonus ?? grade.SpecialBonus;
+            grade.SpecialBonusReason = SpecialBonusReason ?? grade.SpecialBonusReason;
             
             try
             {

@@ -69,7 +69,7 @@
 
         <!-- 成绩录入模态框 -->
         <div class="modal fade" id="gradeModal" tabindex="-1" aria-labelledby="gradeModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="gradeModalLabel">
@@ -92,11 +92,102 @@
                                 <p id="courseInfo" class="form-control-plaintext"></p>
                             </div>
                             
-                            <div class="form-group mb-3">
-                                <label for="gradeValue" class="form-label">成绩 (0-100)：</label>
-                                <input type="number" class="form-control" id="gradeValue" name="gradeValue" 
-                                       min="0" max="100" step="0.1" required>
-                                <small class="form-text text-muted">请输入0-100之间的数值，支持小数</small>
+                            <!-- 成绩构成部分 -->
+                            <div class="card mb-3">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0"><i class="fas fa-chart-bar"></i> 成绩构成</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="classPerformance" class="form-label">课堂表现 (0-100) <span class="text-muted">[权重10%]</span>：</label>
+                                                <input type="number" class="form-control grade-input" id="classPerformance" name="classPerformance" 
+                                                       min="0" max="100" step="0.1" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="experimentGrade" class="form-label">实验成绩 (0-100) <span class="text-muted">[权重20%]</span>：</label>
+                                                <input type="number" class="form-control grade-input" id="experimentGrade" name="experimentGrade" 
+                                                       min="0" max="100" step="0.1" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="homeworkGrade" class="form-label">课后作业 (0-100) <span class="text-muted">[权重20%]</span>：</label>
+                                                <input type="number" class="form-control grade-input" id="homeworkGrade" name="homeworkGrade" 
+                                                       min="0" max="100" step="0.1" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="majorAssignmentGrade" class="form-label">大作业 (0-100) <span class="text-muted">[权重50%]</span>：</label>
+                                                <input type="number" class="form-control grade-input" id="majorAssignmentGrade" name="majorAssignmentGrade" 
+                                                       min="0" max="100" step="0.1" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 加分项 -->
+                            <div class="card mb-3">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0"><i class="fas fa-plus-circle"></i> 加分项</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="regularBonus" class="form-label">普通加分 (0-10)：</label>
+                                                <input type="number" class="form-control grade-input" id="regularBonus" name="regularBonus" 
+                                                       min="0" max="10" step="0.1" value="0">
+                                                <small class="form-text text-muted">如课堂积极发言、按时交作业等</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-3">
+                                                <label for="specialBonus" class="form-label">特别加分 (0-10)：</label>
+                                                <input type="number" class="form-control grade-input" id="specialBonus" name="specialBonus" 
+                                                       min="0" max="10" step="0.1" value="0">
+                                                <small class="form-text text-muted">如学科竞赛获奖、创新项目等</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="specialBonusReason" class="form-label">特别加分理由：</label>
+                                        <textarea class="form-control" id="specialBonusReason" name="specialBonusReason" 
+                                                  rows="2" maxlength="200" placeholder="请详细说明特别加分的原因..."></textarea>
+                                        <small class="form-text text-muted">最多200个字符</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 计算结果 -->
+                            <div class="card">
+                                <div class="card-header bg-success text-white">
+                                    <h6 class="mb-0"><i class="fas fa-calculator"></i> 最终成绩</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label class="form-label">基础成绩：</label>
+                                            <div class="form-control-plaintext fw-bold" id="baseGrade">0.0</div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">总加分：</label>
+                                            <div class="form-control-plaintext fw-bold" id="totalBonus">0.0</div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">最终成绩：</label>
+                                            <div class="form-control-plaintext fw-bold text-success" id="finalGrade">0.0</div>
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">计算公式：课堂表现×10% + 实验×20% + 作业×20% + 大作业×50% + 普通加分 + 特别加分（最高100分）</small>
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -289,23 +380,103 @@
             document.getElementById('modalCourseId').value = courseId;
             document.getElementById('studentInfo').textContent = studentName + ' (学号: ' + studentId + ')';
             document.getElementById('courseInfo').textContent = courseName + ' (课程编号: ' + courseId + ')';
-            document.getElementById('gradeValue').value = '';
+            
+            // 清空所有输入字段
+            document.getElementById('classPerformance').value = '';
+            document.getElementById('experimentGrade').value = '';
+            document.getElementById('homeworkGrade').value = '';
+            document.getElementById('majorAssignmentGrade').value = '';
+            document.getElementById('regularBonus').value = '0';
+            document.getElementById('specialBonus').value = '0';
+            document.getElementById('specialBonusReason').value = '';
+            
+            // 重置计算结果
+            updateGradeCalculation();
             
             var modal = new bootstrap.Modal(document.getElementById('gradeModal'));
             modal.show();
         }
         
+        // 实时计算成绩
+        function updateGradeCalculation() {
+            var classPerformance = parseFloat(document.getElementById('classPerformance').value) || 0;
+            var experimentGrade = parseFloat(document.getElementById('experimentGrade').value) || 0;
+            var homeworkGrade = parseFloat(document.getElementById('homeworkGrade').value) || 0;
+            var majorAssignmentGrade = parseFloat(document.getElementById('majorAssignmentGrade').value) || 0;
+            var regularBonus = parseFloat(document.getElementById('regularBonus').value) || 0;
+            var specialBonus = parseFloat(document.getElementById('specialBonus').value) || 0;
+            
+            // 计算基础成绩
+            var baseGrade = classPerformance * 0.1 + experimentGrade * 0.2 + homeworkGrade * 0.2 + majorAssignmentGrade * 0.5;
+            
+            // 计算总加分
+            var totalBonus = regularBonus + specialBonus;
+            
+            // 计算最终成绩（最高100分）
+            var finalGrade = Math.min(baseGrade + totalBonus, 100);
+            
+            // 更新显示
+            document.getElementById('baseGrade').textContent = baseGrade.toFixed(1);
+            document.getElementById('totalBonus').textContent = totalBonus.toFixed(1);
+            document.getElementById('finalGrade').textContent = finalGrade.toFixed(1);
+        }
+        
         // 表单提交验证 - 使用DOMContentLoaded确保元素存在
         document.addEventListener('DOMContentLoaded', function() {
+            // 为所有成绩输入字段添加实时计算事件
+            var gradeInputs = document.querySelectorAll('.grade-input');
+            gradeInputs.forEach(function(input) {
+                input.addEventListener('input', updateGradeCalculation);
+            });
+            
             var gradeForm = document.getElementById('gradeForm');
             if (gradeForm) {
                 gradeForm.addEventListener('submit', function(e) {
                     e.preventDefault(); // 阻止默认表单提交
                     
-                    var gradeValue = parseFloat(document.getElementById('gradeValue').value);
-                    if (isNaN(gradeValue) || gradeValue < 0 || gradeValue > 100) {
-                        alert('请输入0-100之间的有效成绩！');
+                    // 验证必填字段
+                    var classPerformance = parseFloat(document.getElementById('classPerformance').value);
+                    var experimentGrade = parseFloat(document.getElementById('experimentGrade').value);
+                    var homeworkGrade = parseFloat(document.getElementById('homeworkGrade').value);
+                    var majorAssignmentGrade = parseFloat(document.getElementById('majorAssignmentGrade').value);
+                    var regularBonus = parseFloat(document.getElementById('regularBonus').value) || 0;
+                    var specialBonus = parseFloat(document.getElementById('specialBonus').value) || 0;
+                    
+                    // 验证基础成绩
+                    if (isNaN(classPerformance) || classPerformance < 0 || classPerformance > 100) {
+                        alert('请输入0-100之间的有效课堂表现成绩！');
                         return false;
+                    }
+                    if (isNaN(experimentGrade) || experimentGrade < 0 || experimentGrade > 100) {
+                        alert('请输入0-100之间的有效实验成绩！');
+                        return false;
+                    }
+                    if (isNaN(homeworkGrade) || homeworkGrade < 0 || homeworkGrade > 100) {
+                        alert('请输入0-100之间的有效课后作业成绩！');
+                        return false;
+                    }
+                    if (isNaN(majorAssignmentGrade) || majorAssignmentGrade < 0 || majorAssignmentGrade > 100) {
+                        alert('请输入0-100之间的有效大作业成绩！');
+                        return false;
+                    }
+                    
+                    // 验证加分项
+                    if (regularBonus < 0 || regularBonus > 10) {
+                        alert('普通加分必须在0-10之间！');
+                        return false;
+                    }
+                    if (specialBonus < 0 || specialBonus > 10) {
+                        alert('特别加分必须在0-10之间！');
+                        return false;
+                    }
+                    
+                    // 验证特别加分理由
+                    if (specialBonus > 0) {
+                        var specialBonusReason = document.getElementById('specialBonusReason').value.trim();
+                        if (!specialBonusReason) {
+                            alert('特别加分大于0时，必须填写加分理由！');
+                            return false;
+                        }
                     }
                     
                     if (!confirm('确定要录入该成绩吗？成绩一旦录入无法修改！')) {

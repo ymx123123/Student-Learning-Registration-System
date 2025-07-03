@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StudentGradeManagementSystem.Data;
 using StudentGradeManagementSystem.Models;
+using StudentGradeManagementSystem.Services;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,10 +11,12 @@ namespace StudentGradeManagementSystem.Controllers
     public class StudentPortalController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly GpaService _gpaService;
 
-        public StudentPortalController(ApplicationDbContext context)
+        public StudentPortalController(ApplicationDbContext context, GpaService gpaService)
         {
             _context = context;
+            _gpaService = gpaService;
         }
 
         // 检查学生登录状态
@@ -218,6 +221,37 @@ namespace StudentGradeManagementSystem.Controllers
                 .Include(g => g.Teacher)
                 .OrderBy(g => g.Course.CourseName)
                 .ToListAsync();
+
+            // 获取学生信息
+            var student = await _context.Students
+                .Include(s => s.Class)
+                .FirstOrDefaultAsync(s => s.StudentID == studentId);
+
+            // 获取学生的排名信息
+            var (schoolRank, totalStudents, gpa) = await _gpaService.GetStudentGpaRankingAsync(studentId.Value);
+            
+            // 获取班级排名信息
+            var classRankings = await _gpaService.GetClassGpaRankingAsync(student?.ClassID);
+            var studentClassRanking = classRankings.FirstOrDefault(r => r.StudentId == studentId);
+            
+            // 创建排名信息视图模型
+            var rankingInfo = new StudentGpaRankingViewModel
+            {
+                StudentId = studentId.Value,
+                StudentName = student?.StudentName ?? "",
+                ClassName = student?.Class?.ClassName ?? "未分班",
+                Gpa = gpa,
+                AverageGpa = gpa,
+                SchoolRank = schoolRank,
+                TotalStudents = totalStudents,
+                ClassRank = studentClassRanking?.Rank ?? 0,
+                ClassStudents = classRankings.Count,
+                TotalCredits = grades.Sum(g => g.Course?.Credit ?? 0),
+                PassedCourses = grades.Count(g => g.GradeValue >= 60),
+                TotalCourses = grades.Count
+            };
+            
+            ViewBag.RankingInfo = rankingInfo;
 
             return View(grades);
         }

@@ -55,22 +55,59 @@
                                                 <input type="hidden" name="courseId" value="@course.CourseID" />
                                                 <input type="hidden" name="teacherId" value="@course.TeacherID" />
                                                 
-                                                <div class="row align-items-center">
-                                                    <div class="col-md-3">
+                                                <div class="row mb-3">
+                                                    <div class="col-md-6">
                                                         <strong>课程：</strong>@course.CourseName
                                                     </div>
-                                                    <div class="col-md-3">
+                                                    <div class="col-md-6">
                                                         <strong>任课老师：</strong>@course.TeacherName
                                                     </div>
-                                                    <div class="col-md-3">
-                                                        <label class="form-label">成绩：</label>
-                                                        <input type="number" name="gradeValue" class="form-control" min="0" max="100" step="0.1" placeholder="0-100" required />
+                                                </div>
+                                                
+                                                <div class="row">
+                                                    <div class="col-md-3 mb-3">
+                                                        <label class="form-label"><i class="fas fa-comments"></i> 课堂表现 (10%)</label>
+                                                        <input type="number" name="ClassPerformance" class="form-control" min="0" max="100" step="0.1" placeholder="课堂表现" />
                                                     </div>
-                                                    <div class="col-md-3">
-                                                        <button type="submit" class="btn btn-success">
-                                                            <i class="fas fa-save"></i> 保存成绩
-                                                        </button>
+                                                    <div class="col-md-3 mb-3">
+                                                        <label class="form-label"><i class="fas fa-flask"></i> 实验成绩 (20%)</label>
+                                                        <input type="number" name="ExperimentGrade" class="form-control" min="0" max="100" step="0.1" placeholder="实验成绩" />
                                                     </div>
+                                                    <div class="col-md-3 mb-3">
+                                                        <label class="form-label"><i class="fas fa-home"></i> 课后作业 (20%)</label>
+                                                        <input type="number" name="HomeworkGrade" class="form-control" min="0" max="100" step="0.1" placeholder="作业成绩" />
+                                                    </div>
+                                                    <div class="col-md-3 mb-3">
+                                                        <label class="form-label"><i class="fas fa-project-diagram"></i> 大作业 (50%)</label>
+                                                        <input type="number" name="MajorAssignmentGrade" class="form-control" min="0" max="100" step="0.1" placeholder="大作业成绩" />
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="row">
+                                                    <div class="col-md-4 mb-3">
+                                                        <label class="form-label"><i class="fas fa-plus"></i> 普通加分</label>
+                                                        <input type="number" name="RegularBonus" class="form-control" min="0" max="20" step="0.1" placeholder="普通加分" />
+                                                    </div>
+                                                    <div class="col-md-4 mb-3">
+                                                        <label class="form-label"><i class="fas fa-star"></i> 特别加分</label>
+                                                        <input type="number" name="SpecialBonus" class="form-control" min="0" max="10" step="0.1" placeholder="特别加分" />
+                                                    </div>
+                                                    <div class="col-md-4 mb-3">
+                                                        <label class="form-label"><i class="fas fa-comment"></i> 特别加分原因</label>
+                                                        <input type="text" name="SpecialBonusReason" class="form-control" placeholder="加分原因" />
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="alert alert-info mb-3">
+                                                    <h6><i class="fas fa-calculator"></i> 成绩计算说明：</h6>
+                                                    <p class="mb-1">最终成绩 = 课堂表现×0.1 + 实验×0.2 + 作业×0.2 + 大作业×0.5 + 普通加分 + 特别加分</p>
+                                                    <p class="mb-0">当前计算结果：<span class="calculated-grade">0.0</span> 分</p>
+                                                </div>
+                                                
+                                                <div class="text-center">
+                                                    <button type="submit" class="btn btn-success btn-lg">
+                                                        <i class="fas fa-save"></i> 保存成绩
+                                                    </button>
                                                 </div>
                                             </form>
                                         </div>
@@ -105,4 +142,40 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+    function calculateGrade() {
+        // 获取各项成绩输入值
+        var classPerformance = parseFloat(document.querySelector('input[name="ClassPerformance"]').value) || 0;
+        var experimentGrade = parseFloat(document.querySelector('input[name="ExperimentGrade"]').value) || 0;
+        var homeworkGrade = parseFloat(document.querySelector('input[name="HomeworkGrade"]').value) || 0;
+        var majorAssignmentGrade = parseFloat(document.querySelector('input[name="MajorAssignmentGrade"]').value) || 0;
+        var regularBonus = parseFloat(document.querySelector('input[name="RegularBonus"]').value) || 0;
+        var specialBonus = parseFloat(document.querySelector('input[name="SpecialBonus"]').value) || 0;
+        
+        // 计算总成绩：课堂表现(10%) + 实验成绩(20%) + 课后作业(20%) + 大作业(50%) + 普通加分 + 特别加分
+        var totalGrade = (classPerformance * 0.1) + (experimentGrade * 0.2) + (homeworkGrade * 0.2) + (majorAssignmentGrade * 0.5) + regularBonus + specialBonus;
+        
+        // 确保成绩不超过100分
+        totalGrade = Math.min(totalGrade, 100);
+        
+        // 更新显示的总成绩
+        var gradeDisplay = document.querySelector('.calculated-grade');
+        if (gradeDisplay) {
+            gradeDisplay.textContent = totalGrade.toFixed(2);
+        }
+    }
+    
+    // 为所有成绩输入框添加事件监听器
+    document.addEventListener('DOMContentLoaded', function() {
+        var inputs = document.querySelectorAll('input[type="number"]');
+        inputs.forEach(function(input) {
+            if (input.name === 'ClassPerformance' || input.name === 'ExperimentGrade' || 
+                input.name === 'HomeworkGrade' || input.name === 'MajorAssignmentGrade' || 
+                input.name === 'RegularBonus' || input.name === 'SpecialBonus') {
+                input.addEventListener('input', calculateGrade);
+            }
+        });
+    });
+    </script>
 }

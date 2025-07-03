@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using StudentGradeManagementSystem.Data;
+using StudentGradeManagementSystem.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // 添加控制器服务
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages(); // 添加此行
+
+// 注册自定义服务
+builder.Services.AddScoped<GpaService>();
 
 // 添加Session支持
 builder.Services.AddDistributedMemoryCache();

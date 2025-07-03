@@ -174,7 +174,7 @@ namespace StudentGradeManagementSystem.Controllers
 
         // 录入成绩
         [HttpPost]
-        public async Task<IActionResult> AddGrade(int studentId, int courseId, decimal gradeValue)
+        public async Task<IActionResult> AddGrade(int studentId, int courseId, decimal classPerformance, decimal experimentGrade, decimal homeworkGrade, decimal majorAssignmentGrade, decimal regularBonus = 0, decimal specialBonus = 0, string? specialBonusReason = null)
         {
             if (!IsTeacherLoggedIn())
             {
@@ -216,19 +216,19 @@ namespace StudentGradeManagementSystem.Controllers
                     return Json(new { success = false, message = "该学生已有成绩记录，不能重复录入！" });
                 }
 
-                // 验证成绩范围
-                if (gradeValue < 0 || gradeValue > 100)
-                {
-                    return Json(new { success = false, message = "成绩必须在0-100之间！" });
-                }
-
                 // 创建成绩记录
                 var grade = new Grade
                 {
                     StudentID = studentId,
                     CourseID = courseId,
                     TeacherID = teacherId.Value,
-                    GradeValue = gradeValue
+                    ClassPerformance = classPerformance,
+                    ExperimentGrade = experimentGrade,
+                    HomeworkGrade = homeworkGrade,
+                    MajorAssignmentGrade = majorAssignmentGrade,
+                    RegularBonus = regularBonus,
+                    SpecialBonus = specialBonus,
+                    SpecialBonusReason = specialBonusReason
                 };
 
                 _context.Grades.Add(grade);
