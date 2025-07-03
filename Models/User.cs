@@ -19,7 +19,9 @@ namespace StudentGradeManagementSystem.Models
         [RegularExpression("学生|老师|管理员", ErrorMessage = "角色只能为学生、老师或管理员")]
         public string Role { get; set; }
         
-        // 外键 - 学生ID，可为空
+        /// <summary>
+        /// /外键 - 学生ID，可为空
+        /// </summary>
         public int? StudentID { get; set; }
         
         // 外键 - 教师ID，可为空
