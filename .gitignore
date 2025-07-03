@@ -1,15 +1,8 @@
-# Visual Studio
-.vs/
-bin/
-obj/
-*.user
-*.suo
-*.cache
-*.docstates
-
 # Build results
 [Dd]ebug/
+[Dd]ebugPublic/
 [Rr]elease/
+[Rr]eleases/
 x64/
 x86/
 [Aa][Rr][Mm]/
@@ -19,11 +12,72 @@ bld/
 [Oo]bj/
 [Ll]og/
 
-# NuGet
-packages/
-*.nupkg
-*.snupkg
-.nuget/
+# Visual Studio files
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Files built by Visual Studio
+*_i.c
+*_p.c
+*_h.h
+*.ilk
+*.meta
+*.obj
+*.iobj
+*.pch
+*.pdb
+*.ipdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.tmp_proj
+*_wpftmp.csproj
+*.log
+*.vspscc
+*.vssscc
+.builds
+*.pidb
+*.svclog
+*.scc
 
 # Node.js
 node_modules/
@@ -31,15 +85,11 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Temporary files
-*.tmp
-*.temp
-~$*
-
 # Database
 *.mdf
 *.ldf
+*.ndf
 
-# Logs
-logs/
-*.log
+# Connection strings (if contains sensitive info)
+appsettings.Development.json
+appsettings.Production.json
